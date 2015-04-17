@@ -13,3 +13,10 @@
   </div>
   <%= submit_tag 'Import', :class => 'btn btn-primary' %>
 <% end %>
+
+<p>Import single video</p>
+<%= form_tag import_videos_path, method: "post" do %>
+  <%= label_tag(:youtube_id, "YouTube ID:") %>
+  <%= text_field_tag(:youtube_id) %>
+  <%= submit_tag 'Import'%>
+<% end %>

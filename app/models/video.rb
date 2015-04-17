@@ -64,7 +64,8 @@ class Video < ActiveRecord::Base
 
     begin
       youtube_values = YoutubeReader::parse_video(self.youtube_id)
-    rescue
+    rescue SocketError, NoMethodError
+      raise ArgumentError, "Invalid Youtube ID"
     end
 
     unless youtube_values.empty?
@@ -118,7 +119,7 @@ class Video < ActiveRecord::Base
     videos
   end
 
-  def self.import(file)
+  def self.import_csv(file)
     unless file
       raise ArgumentError, 'Missing file.'
     end
@@ -141,6 +142,16 @@ class Video < ActiveRecord::Base
       video.fill_missing_fields
       video.save
     end
+  end
+
+  def self.import_id(youtube_id)
+    if youtube_id.empty?
+      raise ArgumentError, 'Missing YouTube ID'
+    end
+
+    video = Video.new('youtube_id' => youtube_id)
+    video.fill_missing_fields
+    video.save
   end
 
   def self.get_srt_link_from_amara(amara_link)
